@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Russo+One&family=WDXL+Lubrifont+JP+N&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Club | Погружение в виртуальную реальность</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: url("images/back.jpg") center/cover fixed no-repeat;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            animation: bg-pulse 15s infinite alternate;
+        }
+
+        @keyframes bg-pulse {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(0.8); }
+        }
+        
+        header {
+            background-color: transparent;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+        
+        .logo-nav-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .header-logo {
+            height: 80px;
+	    margin-top: -10px;
+            width: auto;
+        }
+        
+        .header-linkhome, 
+        .header-linkgames,
+        .header-linktariffs {
+	    position: relative;
+            font-family: "Rubik Mono One", monospace;
+            font-weight: 100;
+            font-size: 15px;
+	    right: 20px;
+	    top: -15px;
+            color: #a0a0a0;
+            transition: color 0.3s ease;
+            padding: 10px 15px;
+            text-decoration: none;
+	    margin: -5px 0 0 5px;
+        }
+
+        .header-linkhome:hover, 
+        .header-linkgames:hover,
+        .header-linktariffs:hover { 
+            color: #fff;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding-left: 0;
+            gap: 10px;
+        }
+        
+        /* Стили для формы авторизации */
+        .auth-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 20px;
+        }
+
+        .auth-input {
+            background: rgba(30, 30, 50, 0.7);
+            border: 1px solid rgba(78, 78, 255, 0.3);
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #4e4eff;
+            box-shadow: 0 0 5px rgba(78, 78, 255, 0.5);
+        }
+
+        .auth-input::placeholder {
+            color: #888;
+        }
+
+        .auth-btn {
+            font-family: 'Russo One', sans-serif;
+            background: linear-gradient(45deg, #4e4eff, #6a5acd);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+	    margin-top: -20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: linear-gradient(45deg, #6a5acd, #4e4eff);
+            transform: translateY(-2px);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .auth-links {
+            display: flex;
+            flex-direction: column;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .auth-link {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+	    margin-left: 5px;
+        }
+
+        .auth-link:hover {
+            color: #4e4eff;
+        }
+        
+        .auth-link1 {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+	    margin-left: 165px;
+	    margin-top: -15px;
+        }
+
+        .auth-link1:hover {
+            color: #4e4eff;
+        }
+        
+        /* Стили для карточек игр */
+        .games-container,
+        .tariffs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 20px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .game-card,
+        .tariff-card {
+            background: rgba(30, 30, 50, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 300px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .game-card:hover,
+        .tariff-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .game-image-container,
+        .tariff-image-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .game-image,
+        .tariff-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .game-info,
+        .tariff-info {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .game-title,
+        .tariff-title {
+            margin: 0 0 10px 0;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        
+        .game-description,
+        .tariff-description {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Стили для расширенного описания игры */
+        .game-details {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(20, 20, 40, 0.9);
+            padding: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .game-card:hover .game-details {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .game-card:hover .game-image {
+            transform: scale(1.1);
+        }
+
+        .game-full-description {
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .game-features {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .game-features li {
+            margin-bottom: 5px;
+            list-style-type: none;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .game-features li:before {
+            content: "•";
+            color: #4e4eff;
+            position: absolute;
+            left: 0;
+        }
+
+        .tariff-price {
+            color: #4e4eff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .tariff-time {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .book-btn {
+            background: linear-gradient(45deg, #4e4eff, #6a5acd);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Russo One', sans-serif;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .book-btn:hover {
+            background: linear-gradient(45deg, #6a5acd, #4e4eff);
+            transform: translateY(-2px);
+        }
+
+        .book-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Стили для основного логотипа */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .star {
+	    margin-top: 200px;
+            height:25px;
+            width: auto;
+	    margin-top: 274px;
+	    margin-left: 90px;
+	    
+	}
+
+	.star-text {
+	    font-family: "WDXL Lubrifont JP N", sans-serif;
+	    font-weight: 400;
+  	    font-style: normal;
+            font-size: 15px;
+	    margin-left: 200px;
+	    margin-top: -24px;
+	}
+
+        .main-logo {
+	    margin-top: 200px;
+            height: 120px;
+            width: auto;
+	    margin-right: 40px;
+        }
+
+        .logo-text {
+            font-family: "WDXL Lubrifont JP N", sans-serif;
+	    font-weight: 400;
+  	    font-style: normal;
+            font-size: 18px;
+            margin-top: 0px;
+	    color: rgba(170, 170, 170, 0.85);
+	    margin-right: -5px;
+        }
+
+        .vr-image {
+            float: right;
+            margin-right: 650px;
+            margin-top: -18px;
+            animation: constant-glow 2s infinite alternate;
+            filter: drop-shadow(0 0 1px #4e4eff);
+        }
+
+        @keyframes constant-glow {
+            0% { filter: drop-shadow(0 0 5px #4e4eff); }
+            100% { filter: drop-shadow(0 0 15px #4e4eff) 
+                          drop-shadow(0 0 15px rgba(78, 78, 255, 0.5)); }
+        }
+        
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Анимации для карточек игр */
+        .game-card {
+            animation: cardSlideIn 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes cardSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Анимация для главной страницы */
+        .logo-container {
+            animation: slideUpFadeIn 0.8s ease forwards;
+        }
+
+        @keyframes slideUpFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .vr-image {
+            animation: slideInRight 0.8s ease forwards, constant-glow 2s infinite alternate;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        main {
+            padding: 2rem;
+            min-height: 80vh;
+        }
+
+        footer {
+            padding: 1rem;
+            text-align: center;
+            background-color: transparent;
+        }
+
+        /* Новый блок с новостями */
+        .news-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            padding: 15px;
+            background: rgba(20, 20, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            animation: news-pulse 3s infinite alternate;
+        }
+
+        .news-box h3 {
+            color: #4e4eff;
+            margin-bottom: 10px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .news-box p {
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .news-box .highlight {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        @keyframes news-pulse {
+            0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+            100% { box-shadow: 0 5px 20px rgba(78, 78, 255, 0.3); }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .logo-nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .header-logo {
+                height: 50px;
+                margin-bottom: 10px;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .vr-image {
+                float: none;
+                margin: 20px auto;
+                display: block;
+                animation: slideInRightMobile 0.8s ease forwards, constant-glow 2s infinite alternate;
+            }
+
+            @keyframes slideInRightMobile {
+                from {
+                    opacity: 0;
+                    transform: translateY(50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .games-container,
+            .tariffs-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-card,
+            .tariff-card {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .main-logo {
+                height: 250px;
+            }
+
+            /* Адаптация блока новостей для мобильных */
+            .news-box {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                bottom: 10px;
+            }
+
+            /* Адаптация формы авторизации */
+            .auth-form {
+                flex-direction: column;
+                width: 100%;
+                margin: 15px 0;
+                align-items: flex-start;
+            }
+
+            .auth-input {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .auth-btn {
+                width: 100%;
+            }
+
+            .auth-links {
+                flex-direction: row;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            /* Адаптация описания игр для мобильных */
+            .game-details {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-nav-container">
+            <img src="images/logo.png" alt="VR Club" class="header-logo">
+            <nav>
+                <ul>
+                    <li><a href="#" class="header-linkhome active">Главная</a></li>
+                    <li><a href="#" class="header-linkgames">Игры</a></li>
+                    <li><a href="#" class="header-linktariffs">Тарифы</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="auth-form">
+            <div>
+                <input type="text" class="auth-input" placeholder="Логин">
+                <input type="password" class="auth-input" placeholder="Пароль">
+                <div class="auth-links">
+                    <a href="#" class="auth-link">Забыли пароль?</a>
+                    <a href="#" class="auth-link1">Регистрация</a>
+                </div>
+            </div>
+            <button class="auth-btn">Войти</button>
+        </div>
+    </header>
+    
+    <main>
+        <section id="home-tab" class="tab-content active">
+            <img src="images/1.png" alt="VR оборудование" class="vr-image">
+            <div class="logo-container">
+                <img src="images/text.png" alt="VR Club" class="main-logo">
+                <p class="logo-text">
+VR-клуб — не просто игры, а билет в другую реальность, <br>где ты решаешь, быть ли тебе космонавтом,</br> магом или повелителем скорости! </p>
+            </div>
+	    <img src="images/star.png" alt="stars" class="star">
+	    <p class="star-text"> 5/5 </p>
+            <!-- Новый блок с новостями -->
+            <div class="news-box">
+                <h3>Новости VR Club</h3>
+                <p>Спешим сообщить, что <span class="highlight">26 июня 2025</span> открывается наш новый филиал по адресу: <span class="highlight">ул. Практиканта, 89</span>! В честь открытия - <span class="highlight">скидка 30%</span> на первый час игры для всех посетителей!</p>
+            </div>
+        </section>
+
+        <section id="games-tab" class="tab-content">
+            <h2>Наши VR-Игры</h2>
+            
+            <div class="games-container">
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/beat-saber.jpg" alt="Beat Saber" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Beat Saber</h3>
+                        <p class="game-description">Ритмичная игра с лазерными мечами</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Одна из самых популярных ритм-игр в VR, где вы разрубаете летящие кубы лазерными мечами под музыку.</p>
+                        <ul class="game-features">
+                            <li>Более 50 треков</li>
+                            <li>Множество уровней сложности</li>
+                            <li>Режим мультиплеера</li>
+                            <li>Поддержка кастомных треков</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/half-life.jpg" alt="Half-Life: Alyx" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Half-Life: Alyx</h3>
+                        <p class="game-description">Культовый VR-шутер</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Продолжение легендарной серии Half-Life, созданное специально для виртуальной реальности.</p>
+                        <ul class="game-features">
+                            <li>Полноценный 15-часовой кампаний</li>
+                            <li>Продвинутая физика взаимодействий</li>
+                            <li>Потрясающая графика</li>
+                            <li>Захватывающий сюжет</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/superhot.jpg" alt="Superhot VR" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Superhot VR</h3>
+                        <p class="game-description">Время движется только когда ты двигаешься</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Инновационный шутер, где время движется только когда вы двигаетесь, создавая уникальный игровой опыт.</p>
+                        <ul class="game-features">
+                            <li>Уникальный геймплей</li>
+                            <li>Стильная минималистичная графика</li>
+                            <li>Множество уровней</li>
+                            <li>Режим выживания</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/phasmophobia.jpg" alt="Phasmophobia" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Phasmophobia</h3>
+                        <p class="game-description">Охота на привидений в VR</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Кооперативный хоррор, где вы и ваши друзья играете за охотников за привидениями, исследуя проклятые места.</p>
+                        <ul class="game-features">
+                            <li>До 4 игроков в кооперативе</li>
+                            <li>Динамическая система призраков</li>
+                            <li>Реалистичное оборудование</li>
+                            <li>Система голосового взаимодействия</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/pistol-whip.jpg" alt="Pistol Whip" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Pistol Whip</h3>
+                        <p class="game-description">Экшен в стиле Джона Уика</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Ритмичный экшен-шутер, сочетающий элементы Beat Saber и классических рельсовых шутеров.</p>
+                        <ul class="game-features">
+                            <li>10+ музыкальных треков</li>
+                            <li>Различные режимы сложности</li>
+                            <li>Модификаторы геймплея</li>
+                            <li>Интенсивные тренировки</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/boneworks.jpg" alt="Boneworks" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Boneworks</h3>
+                        <p class="game-description">Физический шутер</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Экспериментальный шутер с продвинутой физикой, где каждый объект взаимодействует по законам реального мира.</p>
+                        <ul class="game-features">
+                            <li>Реалистичная физика</li>
+                            <li>Полноценная кампания</li>
+                            <li>Арена и песочница</li>
+                            <li>Множество оружия</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Добавленные новые карточки игр -->
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/blade-and-sorcery.jpg" alt="Blade and Sorcery" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Blade and Sorcery</h3>
+                        <p class="game-description">Реалистичный мечевой бой с магией</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Физически точный симулятор средневекового боя с мечами и магией в фэнтезийном сеттинге.</p>
+                        <ul class="game-features">
+                            <li>Реалистичная система повреждений</li>
+                            <li>Десятки видов оружия</li>
+                            <li>Магические заклинания</li>
+                            <li>Песочница и сценарии</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/the-walking-dead.jpg" alt="The Walking Dead: Saints & Sinners" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">The Walking Dead</h3>
+                        <p class="game-description">Выживание в мире зомби</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Игра по мотивам знаменитого комикса, где вам предстоит выживать в постапокалиптическом мире.</p>
+                        <ul class="game-features">
+                            <li>Глубокий сюжет</li>
+                            <li>Система крафта</li>
+                            <li>Моральный выбор</li>
+                            <li>Реалистичный бой с зомби</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-image-container">
+                        <img src="images/into-the-radius.jpg" alt="Into the Radius" class="game-image">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">Into the Radius</h3>
+                        <p class="game-description">Сюрреалистичный survival horror</p>
+                    </div>
+                    <div class="game-details">
+                        <p class="game-full-description">Хардкорный survival horror с элементами сталкера, где вы исследуете аномальную зону.</p>
+                        <ul class="game-features">
+                            <li>Реалистичная система выживания</li>
+                            <li>Тщательная подготовка снаряжения</li>
+                            <li>Загадочная атмосфера</li>
+                            <li>Нелинейный геймплей</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Новая вкладка с тарифами в виде карточек -->
+        <section id="tariffs-tab" class="tab-content">
+            <h2>Наши Тарифы</h2>
+            
+            <div class="tariffs-container">
+                <!-- Карточка аренды -->
+                <div class="tariff-card">
+                    <div class="tariff-image-container">
+                        <!-- Вы можете заменить на свое изображение -->
+                        <img src="images/rent.jpg" alt="PREMIUM" class="tariff-image">
+                    </div>
+                    <div class="tariff-info">
+                        <h3 class="tariff-title">Аренда</h3>
+                        <p class="tariff-description"></p>
+                        <button class="book-btn">ЗАБРОНИРОВАТЬ ➤</button>
+                    </div>
+                </div>
+                
+                <!-- Карточка дня рождения -->
+                <div class="tariff-card">
+                    <div class="tariff-image-container">
+                        <!-- Вы можете заменить на свое изображение -->
+                        <img src="images/birthday.jpg" alt="День рождения" class="tariff-image">
+                    </div>
+                    <div class="tariff-info">
+                        <h3 class="tariff-title">День рождения</h3>
+                        <button class="book-btn">ЗАБРОНИРОВАТЬ ➤</button>
+                    </div>
+                </div>
+                
+                <!-- Карточка корпоратива -->
+                <div class="tariff-card">
+                    <div class="tariff-image-container">
+                        <!-- Вы можете заменить на свое изображение -->
+                        <img src="images/corporate.jpg" alt="Корпоратив" class="tariff-image">
+                    </div>
+                    <div class="tariff-info">
+                        <h3 class="tariff-title">Корпоратив</h3>
+                        <button class="book-btn">ЗАБРОНИРОВАТЬ ➤</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer></footer>
+
+    <script>
+        document.querySelectorAll('.header-linkhome, .header-linkgames, .header-linktariffs').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Убираем активный класс у всех кнопок
+                document.querySelectorAll('.header-linkhome, .header-linkgames, .header-linktariffs').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Добавляем активный класс текущей кнопке
+                this.classList.add('active');
+                
+                // Скрываем все вкладки
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Показываем текущую вкладку
+                let tabId;
+                if (this.classList.contains('header-linkhome')) {
+                    tabId = 'home-tab';
+                } else if (this.classList.contains('header-linkgames')) {
+                    tabId = 'games-tab';
+                } else {
+                    tabId = 'tariffs-tab';
+                }
+                
+                // Добавляем задержку для плавного перехода
+                setTimeout(() => {
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Анимация для карточек игр и тарифов
+                    if (tabId === 'games-tab' || tabId === 'tariffs-tab') {
+                        const cards = document.querySelectorAll(tabId === 'games-tab' ? '.game-card' : '.tariff-card');
+                        cards.forEach((card, index) => {
+                            card.style.animation = 'none';
+                            setTimeout(() => {
+                                card.style.animation = `cardSlideIn 0.6s ease ${index * 0.1}s forwards`;
+                            }, 10);
+                        });
+                    }
+                    
+                    // Анимация для главной страницы
+                    if (tabId === 'home-tab') {
+                        const logoContainer = document.querySelector('.logo-container');
+                        const vrImage = document.querySelector('.vr-image');
+                        
+                        logoContainer.style.animation = 'none';
+                        vrImage.style.animation = 'none';
+                        
+                        setTimeout(() => {
+                            logoContainer.style.animation = 'slideUpFadeIn 0.8s ease forwards';
+                            vrImage.style.animation = 'slideInRight 0.8s ease forwards, constant-glow 2s infinite alternate';
+                        }, 10);
+                    }
+                }, 10);
+            });
+        });
+
+        // Обработчик для кнопки авторизации
+        document.querySelector('.auth-btn').addEventListener('click', function() {
+            const login = document.querySelector('.auth-input[type="text"]').value;
+            const password = document.querySelector('.auth-input[type="password"]').value;
+            
+            if (!login || !password) {
+                alert('Пожалуйста, введите логин и пароль');
+                return;
+            }
+            
+            // Здесь должна быть реальная логика авторизации
+            alert(`Добро пожаловать, ${login}! Вход выполнен успешно.`);
+        });
+
+        // Обработчики для ссылок "Забыли пароль?" и "Регистрация"
+        document.querySelectorAll('.auth-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const action = this.textContent === 'Забыли пароль?' ? 'восстановления пароля' : 'регистрации';
+                alert(`Форма ${action} скоро будет доступна!`);
+            });
+        });
+
+        // Обработчики для кнопок бронирования
+        document.querySelectorAll('.book-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const title = this.closest('.tariff-info').querySelector('.tariff-title').textContent;
+                const times = Array.from(this.closest('.tariff-info').querySelectorAll('.tariff-time')).map(el => el.textContent).join('\n');
+                
+                alert(`Вы выбрали тариф "${title}"\n\nДоступные варианты:\n${times}\n\nФорма бронирования скоро будет доступна!`);
+            });
+        });
+
+        // Инициализация анимации для карточек игр при первой загрузке
+        window.addEventListener('load', function() {
+            if (document.getElementById('games-tab').classList.contains('active')) {
+                const cards = document.querySelectorAll('.game-card');
+                cards.forEach((card, index) => {
+                    card.style.animation = `cardSlideIn 0.6s ease ${index * 0.1}s forwards`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
